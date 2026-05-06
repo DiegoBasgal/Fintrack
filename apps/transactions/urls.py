@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import home
+from .views import dashboard, create_transaction
 
 urlpatterns = [
-    path('', home),
+    path('', dashboard, name='dashboard'),
+    path('new/', create_transaction, name='new_transaction'),
 ]

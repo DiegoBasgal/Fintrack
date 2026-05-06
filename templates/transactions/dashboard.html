@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'new_transaction' %}">Nova Transação</a>
+
+<h2>Transações</h2>
+
+<ul>
+    {% for t in transactions %}
+        <li>
+            {{ t.date }} - {{ t.type }} - R$ {{ t.amount }} - {{ t.category }}
+        </li>
+    {% empty %}
+        <li>Nenhuma transação cadastrada</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
