@@ -2,9 +2,33 @@
 
 {% block content %}
 
-<a href="{% url 'new_transaction' %}">Nova Transação</a>
+<h2>Dashboard</h2>
 
-<h2>Transações</h2>
+<a href="{% url 'new_transaction' %}">+ Nova Transação</a>
+
+<hr>
+
+<h3>Resumo</h3>
+<ul>
+    <li>Receita: R$ {{ summary.income }}</li>
+    <li>Despesa: R$ {{ summary.expense }}</li>
+    <li><strong>Saldo: R$ {{ summary.balance }}</strong></li>
+</ul>
+
+<hr>
+
+<h3>Insights</h3>
+<ul>
+    {% for insight in insights %}
+        <li>{{ insight }}</li>
+    {% empty %}
+        <li>Nenhum insight disponível</li>
+    {% endfor %}
+</ul>
+
+<hr>
+
+<h3>Transações</h3>
 
 <ul>
     {% for t in transactions %}
