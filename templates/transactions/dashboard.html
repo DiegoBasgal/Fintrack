@@ -2,42 +2,102 @@
 
 {% block content %}
 
-<h2>Dashboard</h2>
+<div class="d-flex justify-content-between mb-4">
+    <h2>Dashboard</h2>
 
-<a href="{% url 'new_transaction' %}">+ Nova Transação</a>
+    <a href="{% url 'new_transaction' %}" class="btn btn-primary">
+        + Nova Transação
+    </a>
+</div>
 
-<hr>
 
-<h3>Resumo</h3>
-<ul>
-    <li>Receita: R$ {{ summary.income }}</li>
-    <li>Despesa: R$ {{ summary.expense }}</li>
-    <li><strong>Saldo: R$ {{ summary.balance }}</strong></li>
-</ul>
+<div class="row g-3">
 
-<hr>
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+            <h6>Receita</h6>
+            <h3 class="text-success">
+                R$ {{ summary.income }}
+            </h3>
+        </div>
+    </div>
 
-<h3>Insights</h3>
-<ul>
-    {% for insight in insights %}
-        <li>{{ insight }}</li>
-    {% empty %}
-        <li>Nenhum insight disponível</li>
-    {% endfor %}
-</ul>
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+            <h6>Despesa</h6>
+            <h3 class="text-danger">
+                R$ {{ summary.expense }}
+            </h3>
+        </div>
+    </div>
 
-<hr>
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+            <h6>Saldo</h6>
+            <h3 class="text-primary">
+                R$ {{ summary.balance }}
+            </h3>
+        </div>
+    </div>
 
-<h3>Transações</h3>
+</div>
 
-<ul>
-    {% for t in transactions %}
-        <li>
-            {{ t.date }} - {{ t.type }} - R$ {{ t.amount }} - {{ t.category }}
-        </li>
-    {% empty %}
-        <li>Nenhuma transação cadastrada</li>
-    {% endfor %}
-</ul>
+
+<div class="card mt-4 shadow-sm">
+    <div class="card-body">
+        <h4>Insights</h4>
+
+        <ul>
+            {% for insight in insights %}
+                <li>{{ insight }}</li>
+            {% empty %}
+                <li>Nenhum insight disponível</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
+<div class="card mt-4 shadow-sm">
+    <div class="card-body">
+
+        <h4>Transações</h4>
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Valor</th>
+                    <th>Categoria</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for t in transactions %}
+                <tr>
+                    <td>{{ t.date }}</td>
+
+                    <td>
+                        {% if t.type == 'income' %}
+                            <span class="badge bg-success">
+                                Receita
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger">
+                                Despesa
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td>R$ {{ t.amount }}</td>
+                    <td>{{ t.category }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
 
 {% endblock %}
