@@ -69,7 +69,7 @@ def create_transaction(request):
     else:
         form = TransactionForm()
 
-    return render(request, 'transactions/form.html', {'form': form})
+    return render(request, 'transactions/new_transaction.html', {'form': form})
 
 
 @api_view(['GET'])

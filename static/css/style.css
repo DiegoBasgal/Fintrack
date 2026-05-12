@@ -1,0 +1,107 @@
+/* =========================
+   TRANSIÇÕES
+========================= */
+body,
+.card,
+.navbar,
+.table,
+.form-control,
+.form-select,
+.btn {
+    transition: all 0.3s ease;
+}
+
+/* =========================
+   LIGHT MODE (default)
+========================= */
+body {
+    background-color: #f5f7fb;
+    color: #222;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+body.dark-mode {
+    background-color: #6B6B6B !important;
+    color: white !important;
+}
+
+/* Container */
+body.dark-mode .container {
+    background-color: transparent;
+}
+
+/* Navbar */
+body.dark-mode .navbar {
+    background-color: #0d1117 !important;
+    border-bottom: 1px solid #333;
+}
+
+/* Cards */
+body.dark-mode .card {
+    background-color: #1e1e1e !important;
+    color: white !important;
+    border: 1px solid #333;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+/* Tabela */
+body.dark-mode .table {
+    color: white !important;
+}
+
+body.dark-mode .table td,
+body.dark-mode .table th {
+    border-color: #444;
+}
+
+/* Inputs */
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode textarea {
+    background-color: #2a2a2a;
+    color: white;
+    border: 1px solid #555;
+}
+
+/* Placeholder */
+body.dark-mode ::placeholder {
+    color: #aaa;
+}
+
+/* Botões */
+body.dark-mode .btn-secondary {
+    background-color: #444;
+    border-color: #555;
+}
+
+body.dark-mode .btn-outline-light {
+    border-color: #666;
+}
+
+/* Insights */
+body.dark-mode .list-group-item,
+body.dark-mode .alert {
+    background-color: #1e1e1e;
+    color: white;
+    border-color: #333;
+}
+
+/* Hover cards */
+.card:hover {
+    transform: scale(1.02);
+}
+.form-control,
+.form-select {
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.card {
+    border-radius: 20px;
+}
+
+.form-label {
+    font-weight: 600;
+}
