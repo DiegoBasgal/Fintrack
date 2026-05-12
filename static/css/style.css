@@ -92,6 +92,11 @@ body.dark-mode .alert {
 .card:hover {
     transform: scale(1.02);
 }
+
+
+/* =========================
+   NOVA TRANSACAO
+========================= */
 .form-control,
 .form-select {
     border-radius: 10px;
