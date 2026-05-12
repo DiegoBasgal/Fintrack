@@ -58,6 +58,25 @@
 </div>
 
 
+<div class="row mt-4">
+
+    <div class="col-md-6">
+        <div class="card shadow-sm p-3">
+            <h4>Gastos por Categoria</h4>
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm p-3">
+            <h4>Evolução Mensal</h4>
+            <canvas id="monthlyChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+
 <div class="card mt-4 shadow-sm">
     <div class="card-body">
 
@@ -100,4 +119,50 @@
     </div>
 </div>
 
+{{ category_labels|json_script:"category-labels" }}
+{{ category_values|json_script:"category-values" }}
+{{ month_labels|json_script:"month-labels" }}
+{{ month_values|json_script:"month-values" }}
+
+<script>
+window.onload = function () {
+
+    const categoryLabels =
+        JSON.parse(document.getElementById("category-labels").textContent);
+
+    const categoryValues =
+        JSON.parse(document.getElementById("category-values").textContent);
+
+    const monthLabels =
+        JSON.parse(document.getElementById("month-labels").textContent);
+
+    const monthValues =
+        JSON.parse(document.getElementById("month-values").textContent);
+
+    new Chart(document.getElementById("categoryChart"), {
+        type: "pie",
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                data: categoryValues
+            }]
+        }
+    });
+
+    new Chart(document.getElementById("monthlyChart"), {
+        type: "line",
+        data: {
+            labels: monthLabels,
+            datasets: [{
+                label: "Total",
+                data: monthValues,
+                tension: 0.3
+            }]
+        }
+    });
+
+};
+</script>
+
 {% endblock %}
+

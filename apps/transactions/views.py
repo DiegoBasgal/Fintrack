@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
 from .forms import TransactionForm
 from .models import Transaction
 from .selectors import get_user_transactions
@@ -18,10 +20,40 @@ def dashboard(request):
     summary = calculate_summary(transactions)
     insights = generate_insights(transactions)
 
+    # gráfico 1: gastos por categoria
+    category_data = (
+        transactions
+        .filter(type='expense')
+        .values('category__name')
+        .annotate(total=Sum('amount'))
+    )
+
+    category_labels = [x['category__name'] for x in category_data]
+    category_values = [float(x['total']) for x in category_data]
+
+    # gráfico 2: evolução mensal
+    monthly_data = (
+        transactions
+        .annotate(month=TruncMonth('date'))
+        .values('month')
+        .annotate(total=Sum('amount'))
+        .order_by('month')
+    )
+
+    month_labels = [x['month'].strftime("%b/%Y") for x in monthly_data]
+    month_values = [float(x['total']) for x in monthly_data]
+
     return render(request, 'transactions/dashboard.html', {
         'transactions': transactions,
         'summary': summary,
-        'insights': insights
+        'insights': insights,
+
+        'category_labels': category_labels,
+        'category_values': category_values,
+
+        'month_labels': month_labels,
+        'month_values': month_values,
+        
     })
 
 
