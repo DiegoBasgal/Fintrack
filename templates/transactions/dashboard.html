@@ -82,6 +82,31 @@
 
         <h4>Transações</h4>
 
+        <div class="card shadow-sm p-3 mb-4" data-aos="fade-down">
+            <div class="row g-3">
+            
+                <div class="col-md-4">
+                    <select id="filter-type" class="form-select">
+                        <option value="">Todos os tipos</option>
+                        <option value="receita">Receita</option>
+                        <option value="despesa">Despesa</option>
+                    </select>
+                </div>
+            
+                <div class="col-md-4">
+                    <select id="filter-category" class="form-select">
+                        <option value="">Todas categorias</option>
+                        {% for category in categories %}
+                            <option value="{{ category.name }}">
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            
+            </div>
+        </div>
+
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -94,10 +119,10 @@
 
             <tbody>
             {% for t in transactions %}
-                <tr>
+                <tr class="transaction-row">
                     <td>{{ t.date }}</td>
 
-                    <td>
+                    <td class="transaction-type">
                         {% if t.type == 'income' %}
                             <span class="badge bg-success">
                                 Receita
@@ -110,7 +135,7 @@
                     </td>
 
                     <td>R$ {{ t.amount }}</td>
-                    <td>{{ t.category }}</td>
+                    <td class="transaction-category">{{ t.category }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -162,6 +187,52 @@ window.onload = function () {
     });
 
 };
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const typeFilter = document.getElementById("filter-type");
+    const categoryFilter = document.getElementById("filter-category");
+    const rows = document.querySelectorAll(".transaction-row");
+    console.log(rows.length);
+
+    function applyFilters() {
+        const selectedType = typeFilter.value.toLowerCase();
+        const selectedCategory = categoryFilter.value.toLowerCase();
+
+        rows.forEach(row => {
+
+            const typeCell = row.querySelector(".transaction-type");
+            const categoryCell = row.querySelector(".transaction-category");
+
+            if (!typeCell || !categoryCell) return;
+
+            const type =
+                typeCell.innerText.trim().toLowerCase();
+
+            const category =
+                categoryCell.innerText.trim().toLowerCase();
+
+            const matchType =
+                selectedType === "" || type.includes(selectedType);
+
+            const matchCategory =
+                selectedCategory === "" || category.includes(selectedCategory);
+
+            if (matchType && matchCategory) {
+                row.style.display = "";
+                row.style.opacity = "1";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    typeFilter.addEventListener("change", applyFilters);
+    categoryFilter.addEventListener("change", applyFilters);
+
+});
 </script>
 
 {% endblock %}

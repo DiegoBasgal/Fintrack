@@ -172,3 +172,8 @@ body.dark-mode .login-card input {
     color: white;
     border-color: #555;
 }
+
+
+.transaction-row {
+    transition: all 0.3s ease;
+}

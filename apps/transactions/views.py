@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
 from .forms import TransactionForm
-from .models import Transaction
+from .models import Transaction, Category
 from .selectors import get_user_transactions
 from .services import calculate_summary, generate_insights
 from rest_framework.decorators import api_view
@@ -53,6 +53,8 @@ def dashboard(request):
 
         'month_labels': month_labels,
         'month_values': month_values,
+
+        'categories': Category.objects.all()
         
     })
 
