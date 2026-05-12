@@ -110,3 +110,65 @@ body.dark-mode .alert {
 .form-label {
     font-weight: 600;
 }
+
+
+/* =========================
+   ANIMAÇAO DOS BOTOES
+========================= */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+
+/* =========================
+   ANIMAÇAO DOS CARDS
+========================= */
+.card {
+    transition: transform .3s ease;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* =========================
+   LOGIN STYLE
+========================= */
+/* =========================
+   LIGHT MODE (default)
+========================= */
+.login-card {
+    border-radius: 20px;
+    max-width: 500px;
+    margin: auto;
+}
+
+.login-card .form-control {
+    padding: 14px;
+    border-radius: 10px;
+}
+
+.login-card button {
+    padding: 12px;
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+/* =========================
+   DARK MODE (default)
+========================= */
+body.dark-mode .login-card {
+    background-color: #1e1e1e !important;
+    color: white;
+}
+
+body.dark-mode .login-card input {
+    background-color: #2a2a2a;
+    color: white;
+    border-color: #555;
+}

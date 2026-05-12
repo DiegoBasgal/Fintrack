@@ -59,7 +59,7 @@ ROOT_URLCONF = 'fintrack.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -129,8 +129,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]   
 
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/login/'
-LOGOUT_REDIRECT_URL = '/login/'
+LOGOUT_REDIRECT_URL = '/'
 
 TEMPLATES[0]['DIRS'] = [os.path.join(BASE_DIR, 'templates')]
