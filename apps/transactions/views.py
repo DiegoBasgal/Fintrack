@@ -1,15 +1,18 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.views.decorators.http import require_POST
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 from .forms import TransactionForm
 from .models import Transaction, Category
 from .selectors import get_user_transactions
 from .services import calculate_summary, generate_insights
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes
 from .serializers import TransactionSerializer
 
 
@@ -72,6 +75,29 @@ def create_transaction(request):
         form = TransactionForm()
 
     return render(request, 'transactions/new_transaction.html', {'form': form})
+
+@require_POST
+def ajax_login(request):
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+
+    user = authenticate(
+        request,
+        username=username,
+        password=password
+    )
+
+    if user is not None:
+        login(request, user)
+        return JsonResponse({
+            "success": True,
+            "redirect": "/"
+        })
+
+    return JsonResponse({
+        "success": False,
+        "message": "Usuário ou senha inválidos"
+    })
 
 
 @api_view(['GET'])

@@ -188,6 +188,20 @@ body.dark-mode .alert-danger {
     transition: all 0.3s ease;
 }
 
+
+#login-error {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.35s ease;
+}
+
+#login-error.show-error {
+    opacity: 1;
+    transform: translateY(0);
+    animation: shake 0.35s ease;
+}
+
+
 @keyframes shake {
     0% { transform: translateX(0); }
     25% { transform: translateX(-6px); }

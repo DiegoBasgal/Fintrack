@@ -17,28 +17,31 @@
             </div>
             {% endif %}
 
-            <form method="post" id="login-form">
+            <form id="login-form">
+
                 {% csrf_token %}
 
+                <div id="login-error"
+                    class="alert alert-danger d-none">
+                </div>
+
                 <div class="mb-3">
-                    <label class="form-label">Usuário</label>
+                    <label>Usuário</label>
                     <input
-                        type="text"
+                        id="username"
                         name="username"
-                        value="{{ form.username.value|default:'' }}"
-                        class="form-control {% if form.errors %}is-invalid{% endif %}"
-                        placeholder="Digite seu usuário"
+                        class="form-control"
                         required
                     >
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label">Senha</label>
+                    <label>Senha</label>
                     <input
+                        id="password"
                         type="password"
                         name="password"
-                        class="form-control {% if form.errors %}is-invalid{% endif %}"
-                        placeholder="Digite sua senha"
+                        class="form-control"
                         required
                     >
                 </div>
@@ -46,11 +49,64 @@
                 <button class="btn btn-primary w-100">
                     Entrar
                 </button>
+
             </form>
 
         </div>
 
     </div>
 </div>
+
+<script>
+document
+.getElementById("login-form")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const username =
+        document.getElementById("username").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    const csrf =
+        document.querySelector(
+            "[name=csrfmiddlewaretoken]"
+        ).value;
+
+    const errorBox =
+        document.getElementById("login-error");
+
+    errorBox.classList.remove("show-error");
+    errorBox.classList.add("d-none");
+
+    const response = await fetch("/ajax-login/", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": csrf,
+            "Content-Type":
+                "application/x-www-form-urlencoded"
+        },
+        body:
+            `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+        window.location.href = data.redirect;
+    } else {
+        errorBox.innerText = data.message;
+
+        errorBox.classList.remove("d-none");
+
+        // força reflow para reiniciar animação
+        void errorBox.offsetWidth;
+
+        errorBox.classList.add("show-error");
+    }
+});
+</script>
 
 {% endblock %}
