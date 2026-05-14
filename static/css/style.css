@@ -155,8 +155,12 @@ body.dark-mode .alert {
 
 .login-card button {
     padding: 12px;
-    font-weight: 600;
     border-radius: 10px;
+    font-weight: 600;
+}
+
+.alert {
+    animation: shake .35s ease;
 }
 
 /* =========================
@@ -173,7 +177,21 @@ body.dark-mode .login-card input {
     border-color: #555;
 }
 
+body.dark-mode .alert-danger {
+    background-color: #5c1f1f;
+    color: white;
+    border-color: #a33;
+}
+
 
 .transaction-row {
     transition: all 0.3s ease;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
 }
