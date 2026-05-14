@@ -75,10 +75,24 @@ def create_transaction(request):
     else:
         form = TransactionForm()
 
-    return render(request, 'transactions/new_transaction.html', {'form': form})
+    categories = {
+        "income": list(
+            Category.objects
+            .filter(category_type="income")
+            .values("id", "name")
+        ),
+        "expense": list(
+            Category.objects
+            .filter(category_type="expense")
+            .values("id", "name")
+        )
+    }
+
+    return render(request, 'transactions/new_transaction.html', {'form': form, 'categories_json': categories})
+
 
 @require_POST
-def ajax_login(request):
+def ajax_login(request):    
     username = request.POST.get("username")
     password = request.POST.get("password")
 
