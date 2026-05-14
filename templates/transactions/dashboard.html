@@ -2,17 +2,22 @@
 
 {% block content %}
 
-<div class="d-flex justify-content-between mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
+
     <h2>Dashboard</h2>
 
-    <a href="{% url 'new_transaction' %}" class="btn btn-primary">
-        + Nova Transação
-    </a>
-    
-    <a href="{% url 'export_excel' %}"
-       class="btn btn-success me-2">
-        📊 Exportar Excel
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{% url 'new_transaction' %}"
+           class="btn btn-primary">
+            + Nova Transação
+        </a>
+
+        <a href="{% url 'export_excel' %}"
+           class="btn btn-success">
+            📊 Exportar Excel
+        </a>
+    </div>
+
 </div>
 
 
@@ -93,16 +98,20 @@
                 <div class="col-md-4">
                     <select id="filter-type" class="form-select">
                         <option value="">Todos os tipos</option>
-                        <option value="receita">Receita</option>
-                        <option value="despesa">Despesa</option>
+                        <option value="income">Receita</option>
+                        <option value="expense">Despesa</option>
                     </select>
                 </div>
             
                 <div class="col-md-4">
                     <select id="filter-category" class="form-select">
                         <option value="">Todas categorias</option>
+
                         {% for category in categories %}
-                            <option value="{{ category.name }}">
+                            <option
+                                value="{{ category.name }}"
+                                data-type="{{ category.category_type }}"
+                            >
                                 {{ category.name }}
                             </option>
                         {% endfor %}
@@ -127,7 +136,7 @@
                 <tr class="transaction-row">
                     <td>{{ t.date }}</td>
 
-                    <td class="transaction-type">
+                    <td class="transaction-type" data-type="{{ t.type }}">
                         {% if t.type == 'income' %}
                             <span class="badge bg-success">
                                 Receita
@@ -197,46 +206,95 @@ window.onload = function () {
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    const typeFilter = document.getElementById("filter-type");
-    const categoryFilter = document.getElementById("filter-category");
-    const rows = document.querySelectorAll(".transaction-row");
-    console.log(rows.length);
+    const typeFilter =
+        document.getElementById("filter-type");
+
+    const categoryFilter =
+        document.getElementById("filter-category");
+
+    const rows =
+        document.querySelectorAll("tbody tr");
+
+    function updateCategoryOptions() {
+
+        const selectedType = typeFilter.value;
+
+        const options =
+            categoryFilter.querySelectorAll("option");
+
+        options.forEach(option => {
+
+            if (option.value === "") {
+                option.style.display = "block";
+                return;
+            }
+
+            const optionType =
+                option.dataset.type;
+
+            if (
+                selectedType === "" ||
+                optionType === selectedType
+            ) {
+                option.style.display = "block";
+            } else {
+                option.style.display = "none";
+            }
+        });
+
+        categoryFilter.value = "";
+    }
 
     function applyFilters() {
-        const selectedType = typeFilter.value.toLowerCase();
-        const selectedCategory = categoryFilter.value.toLowerCase();
+
+        const selectedType =
+            typeFilter.value.toLowerCase();
+
+        const selectedCategory =
+            categoryFilter.value.toLowerCase();
 
         rows.forEach(row => {
 
-            const typeCell = row.querySelector(".transaction-type");
-            const categoryCell = row.querySelector(".transaction-category");
+            const typeCell =
+                row.querySelector(".transaction-type");
+
+            const categoryCell =
+                row.querySelector(".transaction-category");
 
             if (!typeCell || !categoryCell) return;
 
             const type =
-                typeCell.innerText.trim().toLowerCase();
+                typeCell.dataset.type;
 
             const category =
                 categoryCell.innerText.trim().toLowerCase();
 
             const matchType =
-                selectedType === "" || type.includes(selectedType);
+                selectedType === "" ||
+                type.includes(selectedType);
 
             const matchCategory =
-                selectedCategory === "" || category.includes(selectedCategory);
+                selectedCategory === "" ||
+                category.includes(selectedCategory);
 
-            if (matchType && matchCategory) {
-                row.style.display = "";
-                row.style.opacity = "1";
-            } else {
-                row.style.display = "none";
-            }
+            row.style.display =
+                (matchType && matchCategory)
+                ? ""
+                : "none";
         });
     }
 
-    typeFilter.addEventListener("change", applyFilters);
-    categoryFilter.addEventListener("change", applyFilters);
+    typeFilter.addEventListener("change", function () {
+        updateCategoryOptions();
+        applyFilters();
+    });
 
+    categoryFilter.addEventListener(
+        "change",
+        applyFilters
+    );
+
+    updateCategoryOptions();
 });
 </script>
 
