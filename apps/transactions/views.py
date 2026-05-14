@@ -19,18 +19,19 @@ from .serializers import TransactionSerializer
 @login_required
 def dashboard(request):
     transactions = get_user_transactions(request.user)
+    chart_transactions = Transaction.objects.filter(user=request.user)
 
     summary = calculate_summary(transactions)
     insights = generate_insights(transactions)
 
     # gráfico 1: gastos por categoria
     category_data = (
-        transactions
+        chart_transactions
         .filter(type='expense')
         .values('category__name')
         .annotate(total=Sum('amount'))
     )
-
+    
     category_labels = [x['category__name'] for x in category_data]
     category_values = [float(x['total']) for x in category_data]
 
