@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login
@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
+from openpyxl import Workbook
+from openpyxl.styles import Font
 from .forms import TransactionForm
 from .models import Transaction, Category
 from .selectors import get_user_transactions
@@ -89,6 +91,63 @@ def create_transaction(request):
     }
 
     return render(request, 'transactions/new_transaction.html', {'form': form, 'categories_json': categories})
+
+
+@login_required
+def export_excel(request):
+    transactions = get_user_transactions(request.user)
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Transações"
+
+    # cabeçalho
+    headers = [
+        "Data",
+        "Tipo",
+        "Valor",
+        "Categoria",
+        "Descrição"
+    ]
+
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.value = header
+        cell.font = Font(bold=True)
+
+    # dados
+    for row_num, t in enumerate(transactions, 2):
+        ws.cell(row=row_num, column=1, value=t.date.strftime("%d/%m/%Y"))
+        ws.cell(row=row_num, column=2, value=t.get_type_display())
+        ws.cell(row=row_num, column=3, value=float(t.amount))
+        ws.cell(row=row_num, column=4, value=t.category.name)
+        ws.cell(row=row_num, column=5, value=t.description)
+
+    # ajustar largura
+    for column in ws.columns:
+        max_length = 0
+        column_letter = column[0].column_letter
+
+        for cell in column:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+
+        ws.column_dimensions[column_letter].width = max_length + 2
+
+    response = HttpResponse(
+        content_type=
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    response["Content-Disposition"] = \
+        'attachment; filename="fintrack_export.xlsx"'
+
+    wb.save(response)
+
+    return response
 
 
 @require_POST
